@@ -12,7 +12,7 @@ with open(version_py_file) as version_py:
 setup(
   name = 'lambdex',
   version = __version__,
-  description = 'lambdex is a python environment packager for aws lambda',
+  description = 'lambdex turns pex files into aws lambda python functions.',
   zip_safe = True,
   entry_points = {
     'console_scripts': [
@@ -22,8 +22,9 @@ setup(
   packages = [
     'lambdex',
     'lambdex.bin',
+    'lambdex.resources',
   ],
   install_requires = [
-    'pex==1.1.10',
+    'pex>=1.1.15',
   ]
 )
