@@ -92,11 +92,11 @@ def configure_build_command(parser):
       help='Set the entry point of the lambda function to this package:name tuple.')
 
   parser.add_argument(
-      '--handler',
+      '-H', '--script-handler',
       dest='handler',
       default='handler',
       metavar='FUNCTION',
-      help='If -s is specfied, use this function within the script to invoke.  Default: "handler"')
+      help='Invoke this function within the script.  Default: "handler"')
 
 
 def load_json_blob(filename):
