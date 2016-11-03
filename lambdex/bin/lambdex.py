@@ -30,6 +30,12 @@ class LambdexInfo(object):
     return json.dumps({'entry_point': self.entry_point})
 
 
+def _write_zip_content(zf, filename, content):
+  info = zipfile.ZipInfo(filename)
+  info.external_attr = 0755 << 16L
+  zf.writestr(info, content)
+
+
 def write_lambdex_handler(pex_zip, options):
   if (options.script is not None and options.entry_point is not None) or (
       options.script is None and options.entry_point is None):
@@ -52,9 +58,12 @@ def write_lambdex_handler(pex_zip, options):
 
   with contextlib.closing(zipfile.ZipFile(pex_zip, 'a')) as zf:
     if script is not None:
-      zf.write(os.path.realpath(options.script), arcname=script)
-    zf.writestr('LAMBDEX-INFO', lambdex_info.to_json())
-    zf.writestr('lambdex_handler.py', pkgutil.get_data('lambdex.resources', 'lambdex_handler.py'))
+      pathname = os.path.realpath(options.script)
+      with open(os.path.realpath(options.script), 'rb') as fp:
+        _write_zip_content(zf, script, fp.read())
+    _write_zip_content(zf, 'LAMBDEX-INFO', lambdex_info.to_json())
+    _write_zip_content(
+        zf, 'lambdex_handler.py', pkgutil.get_data('lambdex.resources', 'lambdex_handler.py'))
 
 
 # lambdex build foo.pex
