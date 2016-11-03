@@ -30,9 +30,6 @@ class LambdexInfo(object):
     return json.dumps({'entry_point': self.entry_point})
 
 
-# pex -r requirements.txt -o function.pex && lambdex build -s my_function.py
-#     -o function.zip function.pex
-# lambdex test function.zip <test.json
 def write_lambdex_handler(pex_zip, options):
   if (options.script is not None and options.entry_point is not None) or (
       options.script is None and options.entry_point is None):
@@ -61,7 +58,7 @@ def write_lambdex_handler(pex_zip, options):
 
 
 # lambdex build foo.pex
-#   [--handler HANDLER]
+#   [-H handler]
 #   [-s script.py]
 #   [-e pkg:symbol]
 def build_lambdex(args):

@@ -1,0 +1,3 @@
+1) lambdex test should use something other than 'None' for context
+2) pex should be fixed so that we can build pex files from w/in lambdex (pex cli composability broke somewhere in 1.1.x)
+3) tests?

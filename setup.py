@@ -12,7 +12,10 @@ with open(version_py_file) as version_py:
 setup(
   name = 'lambdex',
   version = __version__,
+  author='Brian Wickman',
+  author_email='wickman@gmail.com',
   description = 'lambdex turns pex files into aws lambda python functions.',
+  url = 'https://github.com/wickman/lambdex',
   zip_safe = True,
   entry_points = {
     'console_scripts': [
