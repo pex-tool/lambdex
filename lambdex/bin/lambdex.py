@@ -32,7 +32,7 @@ class LambdexInfo(object):
 
 def _write_zip_content(zf, filename, content):
   info = zipfile.ZipInfo(filename)
-  info.external_attr = 0755 << 16L
+  info.external_attr = 0o755 << 16
   zf.writestr(info, content)
 
 
