@@ -58,7 +58,6 @@ def write_lambdex_handler(pex_zip, options):
 
   with contextlib.closing(zipfile.ZipFile(pex_zip, 'a')) as zf:
     if script is not None:
-      pathname = os.path.realpath(options.script)
       with open(os.path.realpath(options.script), 'rb') as fp:
         _write_zip_content(zf, script, fp.read())
     _write_zip_content(zf, 'LAMBDEX-INFO', lambdex_info.to_json())
