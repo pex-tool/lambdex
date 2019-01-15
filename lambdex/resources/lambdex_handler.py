@@ -18,7 +18,15 @@ if __entry_point__ is None:
 sys.path[0] = os.path.abspath(sys.path[0])
 sys.path.insert(0, os.path.abspath(os.path.join(__entry_point__, '.bootstrap')))
 
-from _pex.pex_bootstrapper import bootstrap_pex_env, is_compressed
+try:
+  # PEX >= 1.6.0
+  from pex.third_party.pkg_resources import EntryPoint as __EntryPoint
+  from pex.pex_bootstrapper import bootstrap_pex_env, is_compressed
+except ImportError:
+  # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
+  from pkg_resources import EntryPoint as __EntryPoint
+  from _pex.pex_bootstrapper import bootstrap_pex_env, is_compressed
+
 bootstrap_pex_env(__entry_point__)
 
 if is_compressed(__entry_point__):
@@ -31,7 +39,6 @@ else:
 
 import json as __json
 __lambdex_info = __json.loads(__lambdex_info_blob)
-from pkg_resources import EntryPoint as __EntryPoint
 __RUNNER = __EntryPoint.parse('run = %s' % __lambdex_info['entry_point']).resolve()
 
 def handler(event, context):
