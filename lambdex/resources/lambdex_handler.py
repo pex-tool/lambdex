@@ -21,16 +21,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(__entry_point__, '.bootstrap')))
 try:
   # PEX >= 1.6.0
   from pex.third_party.pkg_resources import EntryPoint as __EntryPoint
-  from pex.pex_bootstrapper import bootstrap_pex_env, is_compressed
+  from pex.pex_bootstrapper import bootstrap_pex_env
 except ImportError:
   # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
   from pkg_resources import EntryPoint as __EntryPoint
-  from _pex.pex_bootstrapper import bootstrap_pex_env, is_compressed
+  from _pex.pex_bootstrapper import bootstrap_pex_env
 
 bootstrap_pex_env(__entry_point__)
 
-if is_compressed(__entry_point__):
-  import contextlib, zipfile
+import zipfile
+if zipfile.is_zipfile(__entry_point__):
+  import contextlib
   with contextlib.closing(zipfile.ZipFile(__entry_point__)) as zf:
     __lambdex_info_blob = zf.read('LAMBDEX-INFO')
 else:
