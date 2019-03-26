@@ -10,7 +10,13 @@ import sys
 import zipfile
 
 from pex.pex_bootstrapper import bootstrap_pex_env
-from pkg_resources import EntryPoint
+
+try:
+  # PEX >= 1.6.0
+  from pex.third_party.pkg_resources import EntryPoint
+except ImportError:
+  # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
+  from pkg_resources import EntryPoint
 
 
 def die(msg):
