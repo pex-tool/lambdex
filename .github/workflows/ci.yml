@@ -1,0 +1,49 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  checks:
+    name:  TOXENV=${{ matrix.tox-env }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - check-name: Style
+            python-version: 2.7
+            tox-env: style
+          - check-name: Packaging
+            python-version: 3.9
+            tox-env: wheel
+    steps:
+      - name: Checkout Lambdex
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ matrix.python-version }}"
+      - name: Check ${{ matrix.check-name }}
+        uses: pantsbuild/actions/run-tox@95209b287c817c78a765962d40ac6cea790fc511
+        with:
+          tox-env: ${{ matrix.tox-env }}
+  integration-tests:
+    name: (${{ matrix.os }}) TOXENV=py${{ join(matrix.python-version, '') }}-int-pre-pex1.6,py${{ join(matrix.python-version, '') }}-int-post-pex1.6
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [[2, 7], [3, 6], [3, 7], [3, 8]]
+        os: [ubuntu-20.04, macos-10.15]
+        exclude:
+          - os: macos-10.15
+            python-version: [3, 6]
+          - os: macos-10.15
+            python-version: [3, 7]
+    steps:
+      - name: Checkout Lambdex
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ join(matrix.python-version, '.') }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: "${{ join(matrix.python-version, '.') }}"
+      - name: Run Integration Tests
+        uses: pantsbuild/actions/run-tox@95209b287c817c78a765962d40ac6cea790fc511
+        with:
+          tox-env: py${{ join(matrix.python-version, '') }}-int-pre-pex1.6,py${{ join(matrix.python-version, '') }}-int-post-pex1.6
