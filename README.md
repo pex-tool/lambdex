@@ -76,4 +76,4 @@ Amazon provides an amazonlinux docker image which can be useful for building pla
 on AWS Lambda.  See [documentation](http://docs.aws.amazon.com/AmazonECR/latest/userguide/amazon_linux_container_image.html)
 for information about that image.
 
-The minimum Dockerfile to produce can environment that can build Amazon Linux-specific pex files can be found [here](https://github.com/wickman/lambdex/blob/master/Dockerfile)
+The minimum Dockerfile to produce can environment that can build Amazon Linux-specific pex files can be found [here](https://github.com/pantsbuild/lambdex/blob/main/Dockerfile)
