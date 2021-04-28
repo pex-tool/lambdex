@@ -1,0 +1,54 @@
+name: Release
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to manually run a deploy for.
+        required: true
+jobs:
+  determine-tag:
+    name: Determine the release tag to operate against.
+    runs-on: ubuntu-20.04
+    outputs:
+      release-tag: ${{ steps.determine-tag.outputs.release-tag }}
+      release-version: ${{ steps.determine-tag.outputs.release-version }}
+    steps:
+      - name: Determine Tag
+        id: determine-tag
+        run: |
+          if [[ -n "${{ github.event.inputs.tag }}" ]]; then
+            RELEASE_TAG=${{ github.event.inputs.tag }}
+          else
+            RELEASE_TAG=${GITHUB_REF#refs/tags/}
+          fi
+          if [[ "${RELEASE_TAG}" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]]; then
+            echo "::set-output name=release-tag::${RELEASE_TAG}"
+            echo "::set-output name=release-version::${RELEASE_TAG#v}"
+          else
+            echo "::error::Release tag '${RELEASE_TAG}' must match 'v\d+.\d+.\d+'."
+            exit 1
+          fi
+  pypi:
+    name: Publish sdist and wheel to PyPI
+    runs-on: ubuntu-20.04
+    environment: Release
+    needs: determine-tag
+    steps:
+      - name: Checkout ${{ needs.determine-tag.outputs.release-tag }}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.determine-tag.outputs.release-tag }}
+      - name: Setup Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Publish ${{ needs.determine-tag.outputs.release-tag }}
+        uses: ./.github/actions/run-tox
+        env:
+          FLIT_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          FLIT_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        with:
+          tox-env: publish
