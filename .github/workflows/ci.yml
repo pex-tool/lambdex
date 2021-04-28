@@ -7,9 +7,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - check-name: Style
-            python-version: 2.7
-            tox-env: style
+          - check-name: Format
+            python-version: 3.9
+            tox-env: fmt-check
           - check-name: Packaging
             python-version: 3.9
             tox-env: package

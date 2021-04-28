@@ -39,3 +39,18 @@ include = ["CHANGES.md"]
 
 [tool.flit.metadata.urls]
 Changelog = "https://github.com/pantsbuild/lambdex/blob/main/CHANGES.md"
+
+[tool.black]
+line-length = 100
+target-version = ["py27"]
+exclude = '''
+/(
+  | \.git
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = "lambdex"
+
