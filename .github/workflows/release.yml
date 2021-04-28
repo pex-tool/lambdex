@@ -46,7 +46,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Publish ${{ needs.determine-tag.outputs.release-tag }}
-        uses: ./.github/actions/run-tox
+        uses: pantsbuild/actions/run-tox@95209b287c817c78a765962d40ac6cea790fc511
         env:
           FLIT_USERNAME: ${{ secrets.PYPI_USERNAME }}
           FLIT_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
