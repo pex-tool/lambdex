@@ -14,6 +14,8 @@ import zipfile
 
 from pex.pex_bootstrapper import bootstrap_pex_env
 
+from lambdex.version import __version__
+
 try:
     # PEX >= 1.6.0
     from pex.third_party.pkg_resources import EntryPoint
@@ -85,7 +87,11 @@ def build_lambdex(args):
 
 
 def configure_build_command(parser):
-    parser = parser.add_parser("build", help="build a lambdex package")
+    parser = parser.add_parser(
+        "build",
+        help="build a lambdex package",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.set_defaults(func=build_lambdex)
 
     parser.add_argument(
@@ -116,7 +122,7 @@ def configure_build_command(parser):
         dest="handler",
         default="handler",
         metavar="FUNCTION",
-        help='Invoke this function within the script.  Default: "handler"',
+        help="Invoke this function within the script.",
     )
 
 
@@ -191,7 +197,11 @@ def test_lambdex(args):
 
 
 def configure_test_command(parser):
-    parser = parser.add_parser("test", help="test a lambdex package")
+    parser = parser.add_parser(
+        "test",
+        help="test a lambdex package",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.set_defaults(func=test_lambdex)
 
     parser.add_argument(
@@ -223,7 +233,14 @@ def configure_test_command(parser):
 
 
 def configure_clp():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-V", "--version", action="version", version=__version__)
+
+    def usage(_):
+        parser.print_help()
+
+    parser.set_defaults(func=usage)
+
     subparsers = parser.add_subparsers()
     configure_build_command(subparsers)
     configure_test_command(subparsers)
