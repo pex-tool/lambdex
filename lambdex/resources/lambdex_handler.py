@@ -50,5 +50,5 @@ __lambdex_info = __json.loads(__lambdex_info_blob)
 __RUNNER = __EntryPoint.parse("run = %s" % __lambdex_info["entry_point"]).resolve()
 
 
-def handler(event, context):
-    return __RUNNER(event, context)
+def handler(event, context, *args, **kwargs):
+    return __RUNNER(event, context, *args, **kwargs)
