@@ -77,3 +77,9 @@ on AWS Lambda.  See [documentation](http://docs.aws.amazon.com/AmazonECR/latest/
 for information about that image.
 
 The minimum Dockerfile to produce can environment that can build Amazon Linux-specific pex files can be found [here](https://github.com/pantsbuild/lambdex/blob/main/Dockerfile)
+
+### controlling runtime execution
+
+To override the entry point that was specified at build time, you can use the `LAMBDEX_ENTRY_POINT` env var:
+
+    LAMBDEX_ENTRY_POINT=mymodule.myapp:other_handler ...
