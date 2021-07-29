@@ -33,21 +33,25 @@ except ImportError:
 
 bootstrap_pex_env(__entry_point__)
 
-import zipfile
+__lambdex_entry_point = os.environ.get("LAMBDEX_ENTRY_POINT")
 
-if zipfile.is_zipfile(__entry_point__):
-    import contextlib
+if not __lambdex_entry_point:
+    import json as __json
+    import zipfile
 
-    with contextlib.closing(zipfile.ZipFile(__entry_point__)) as zf:
-        __lambdex_info_blob = zf.read("LAMBDEX-INFO")
-else:
-    with open(os.path.join(__entry_point__, "LAMBDEX-INFO"), "rb") as fp:
-        __lambdex_info_blob = fp.read()
+    if zipfile.is_zipfile(__entry_point__):
+        import contextlib
 
-import json as __json
+        with contextlib.closing(zipfile.ZipFile(__entry_point__)) as zf:
+            __lambdex_info_blob = zf.read("LAMBDEX-INFO")
+    else:
+        with open(os.path.join(__entry_point__, "LAMBDEX-INFO"), "rb") as fp:
+            __lambdex_info_blob = fp.read()
 
-__lambdex_info = __json.loads(__lambdex_info_blob)
-__RUNNER = __EntryPoint.parse("run = %s" % __lambdex_info["entry_point"]).resolve()
+    __lambdex_info = __json.loads(__lambdex_info_blob)
+    __lambdex_entry_point = __lambdex_info["entry_point"]
+
+__RUNNER = __EntryPoint.parse("run = %s" % __lambdex_entry_point).resolve()
 
 
 def handler(event, context):

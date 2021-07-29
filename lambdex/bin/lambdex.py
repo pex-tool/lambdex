@@ -180,15 +180,18 @@ def test_lambdex(args):
     bootstrap_pex_env(args.pex)
 
     with cached_environment(args.root, args.pex) as target:
-        with open(os.path.join(target, "LAMBDEX-INFO"), "rb") as fp:
-            lambdex_info_blob = fp.read()
+        lambdex_entry_point = os.environ.get("LAMBDEX_ENTRY_POINT")
+        if not lambdex_entry_point:
+            with open(os.path.join(target, "LAMBDEX-INFO"), "rb") as fp:
+                lambdex_info_blob = fp.read()
 
-        lambdex_info = LambdexInfo.from_string(lambdex_info_blob)
+            lambdex_info = LambdexInfo.from_string(lambdex_info_blob)
+            lambdex_entry_point = lambdex_info.entry_point
 
         sys.path.append(target)
 
         with chdir(target):
-            runner = EntryPoint.parse("run = %s" % lambdex_info.entry_point).resolve()
+            runner = EntryPoint.parse("run = %s" % lambdex_entry_point).resolve()
             if args.empty:
                 runner({}, None)
             else:
