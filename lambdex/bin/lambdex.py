@@ -74,12 +74,13 @@ def write_lambdex_handler(pex_zip, options):
                 _write_zip_content(zf, script, fp.read())
         _write_zip_content(zf, "LAMBDEX-INFO", lambdex_info.to_json())
         _write_zip_content(
-            zf, "lambdex_handler.py", pkgutil.get_data("lambdex.resources", "lambdex_handler.py")
+            zf, options.module, pkgutil.get_data("lambdex.resources", "lambdex_handler.py")
         )
 
 
 # lambdex build foo.pex
 #   [-H handler]
+#   [-M module.py]
 #   [-s script.py]
 #   [-e pkg:symbol]
 def build_lambdex(args):
@@ -123,6 +124,15 @@ def configure_build_command(parser):
         default="handler",
         metavar="FUNCTION",
         help="Invoke this function within the script.",
+    )
+
+    parser.add_argument(
+        "-M",
+        "--script-module",
+        dest="module",
+        default="lambdex_handler.py",
+        metavar="FILENAME",
+        help="Root module of the lambda.",
     )
 
 
