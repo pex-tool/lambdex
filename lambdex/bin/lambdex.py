@@ -202,11 +202,23 @@ def test_lambdex(args):
 
         with chdir(target):
             runner = EntryPoint.parse("run = %s" % lambdex_entry_point).resolve()
-            if args.empty:
-                runner({}, None)
-            else:
-                for filename in args.files:
-                    runner(load_json_blob(filename), None)
+            if args.type == "event":
+                if args.empty:
+                    runner({}, None)
+                else:
+                    for filename in args.files:
+                        runner(load_json_blob(filename), None)
+            elif args.type == "gcp-http":
+                import flask
+
+                app = flask.Flask("test-app")
+                if args.empty:
+                    with app.test_request_context(json={}):
+                        runner(flask.request)
+                else:
+                    for filename in args.files:
+                        with app.test_request_context(json=load_json_blob(filename)):
+                            runner(flask.request)
 
 
 def configure_test_command(parser):
@@ -242,6 +254,14 @@ def configure_test_command(parser):
         dest="root",
         default="~/.lambdex",
         help="If specified, cache lambdex test environments here.",
+    )
+
+    parser.add_argument(
+        "--type",
+        dest="type",
+        default="event",
+        choices=["event", "gcp-http"],
+        help="The type of function to be tested.",
     )
 
 
