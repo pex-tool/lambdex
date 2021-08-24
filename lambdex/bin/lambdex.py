@@ -23,6 +23,8 @@ except ImportError:
     # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
     from pkg_resources import EntryPoint
 
+EVENT_FUNCTION_SIGNATURE = "event"
+GCP_HTTP_FUNCTION_SIGNATURE = "gcp-http"
 
 def die(msg):
     print(msg, file=sys.stderr)
@@ -202,13 +204,13 @@ def test_lambdex(args):
 
         with chdir(target):
             runner = EntryPoint.parse("run = %s" % lambdex_entry_point).resolve()
-            if args.type == "event":
+            if args.type == EVENT_FUNCTION_SIGNATURE:
                 if args.empty:
                     runner({}, None)
                 else:
                     for filename in args.files:
                         runner(load_json_blob(filename), None)
-            elif args.type == "gcp-http":
+            elif args.type == GCP_HTTP_FUNCTION_SIGNATURE:
                 import flask
 
                 app = flask.Flask("test-app")
@@ -260,7 +262,7 @@ def configure_test_command(parser):
         "--type",
         dest="type",
         default="event",
-        choices=["event", "gcp-http"],
+        choices=[EVENT_FUNCTION_SIGNATURE, GCP_HTTP_FUNCTION_SIGNATURE],
         help="The type of function to be tested.",
     )
 
