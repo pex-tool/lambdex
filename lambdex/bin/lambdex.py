@@ -26,6 +26,7 @@ except ImportError:
 EVENT_FUNCTION_SIGNATURE = "event"
 GCP_HTTP_FUNCTION_SIGNATURE = "gcp-http"
 
+
 def die(msg):
     print(msg, file=sys.stderr)
     sys.exit(1)
