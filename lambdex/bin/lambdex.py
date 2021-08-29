@@ -262,7 +262,7 @@ def configure_test_command(parser):
     parser.add_argument(
         "--type",
         dest="type",
-        default="event",
+        default=EVENT_FUNCTION_SIGNATURE,
         choices=[EVENT_FUNCTION_SIGNATURE, GCP_HTTP_FUNCTION_SIGNATURE],
         help="The type of function to be tested.",
     )
