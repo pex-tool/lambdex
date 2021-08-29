@@ -4,7 +4,7 @@ import flask
 import requests
 
 
-def handler(request: flask.Request):
+def handler(request):
     request_json = request.get_json()
     url = request_json.get("url")
     if not url:
