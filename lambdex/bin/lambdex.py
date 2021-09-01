@@ -23,6 +23,9 @@ except ImportError:
     # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
     from pkg_resources import EntryPoint
 
+EVENT_FUNCTION_SIGNATURE = "event"
+GCP_HTTP_FUNCTION_SIGNATURE = "gcp-http"
+
 
 def die(msg):
     print(msg, file=sys.stderr)
@@ -202,11 +205,23 @@ def test_lambdex(args):
 
         with chdir(target):
             runner = EntryPoint.parse("run = %s" % lambdex_entry_point).resolve()
-            if args.empty:
-                runner({}, None)
-            else:
-                for filename in args.files:
-                    runner(load_json_blob(filename), None)
+            if args.type == EVENT_FUNCTION_SIGNATURE:
+                if args.empty:
+                    runner({}, None)
+                else:
+                    for filename in args.files:
+                        runner(load_json_blob(filename), None)
+            elif args.type == GCP_HTTP_FUNCTION_SIGNATURE:
+                import flask
+
+                app = flask.Flask("test-app")
+                if args.empty:
+                    with app.test_request_context(json={}):
+                        runner(flask.request)
+                else:
+                    for filename in args.files:
+                        with app.test_request_context(json=load_json_blob(filename)):
+                            runner(flask.request)
 
 
 def configure_test_command(parser):
@@ -242,6 +257,14 @@ def configure_test_command(parser):
         dest="root",
         default="~/.lambdex",
         help="If specified, cache lambdex test environments here.",
+    )
+
+    parser.add_argument(
+        "--type",
+        dest="type",
+        default=EVENT_FUNCTION_SIGNATURE,
+        choices=[EVENT_FUNCTION_SIGNATURE, GCP_HTTP_FUNCTION_SIGNATURE],
+        help="The type of function to be tested.",
     )
 
 

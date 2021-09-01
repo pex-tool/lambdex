@@ -42,6 +42,11 @@ If you have a script function.py with a lambda handler named `my_handler`, you w
 This bundles function.py within the pex environment and instructs lambdex to
 call the python function `my_handler` when being invoked by AWS.
 
+If you would like to build a GCP Cloud Function, you will need to specify the name of the entrypoint module
+to be `main.py`.
+
+    lambdex build -s example_http_function.py -M main.py lambda_function.zip
+
 ### step 3 (optional): test your lambdex function
 
 Once you have created a lambdex file, you can test it as if it were being invoked by Amazon using `lambdex test`.
@@ -52,6 +57,12 @@ Given a lambdex package `lambda_function.pex`, you can either send it an empty j
 You can alternately supply a list of files containing json structs e.g.
 
     lambdex test lambda_function.pex event1.json event2.json ...
+
+Testing a GCP HTTP Cloud Function requires specifying the type.
+
+    lambdex test --type gcp-http lambda_function.zip
+
+> Note: In order to test GCP HTTP Cloud Functions, you must be using pex v1.6 or greater.
 
 ### step 4: upload lambda function
 

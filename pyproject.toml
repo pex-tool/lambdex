@@ -31,6 +31,12 @@ classifiers = [
 requires = ["pex>=1.1.15"]
 requires-python = ">=2.7,<3.10,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 
+[tool.flit.metadata.requires-extra]
+test-gcp-http = [
+  "flask<2; python_version < '3.6'",
+  "flask~=2.0.0; python_version >= '3.6'"
+]
+
 [tool.flit.scripts]
 lambdex = "lambdex.bin.lambdex:main"
 

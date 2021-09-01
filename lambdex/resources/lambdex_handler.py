@@ -54,5 +54,5 @@ if not __lambdex_entry_point:
 __RUNNER = __EntryPoint.parse("run = %s" % __lambdex_entry_point).resolve()
 
 
-def handler(event, context):
-    return __RUNNER(event, context)
+def handler(*args, **kwargs):
+    return __RUNNER(*args, **kwargs)
