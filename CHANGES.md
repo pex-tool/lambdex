@@ -1,5 +1,13 @@
 # Release Notes
 
+## 0.1.6
+
+This release brings support for creating a lambdex that works on GCP. The feature should work for
+ancient Pex but is only tested against modern Pex (>=1.6).
+
+* Allow arbitrary handlers to support more runtimes. (#22)
+* Create arg that can specify module name. (#21)
+
 ## 0.1.5
 
 This release adds support for customizing the entry point at runtime using `LAMBDEX_ENTRY_POINT`
