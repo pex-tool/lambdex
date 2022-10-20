@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.1.7
+
+This release brings official support for Python 3.10 and 3.11.
+
 ## 0.1.6
 
 This release brings support for creating a lambdex that works on GCP. The feature should work for
