@@ -15,13 +15,13 @@ jobs:
             tox-env: package
     steps:
       - name: Checkout Lambdex
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "${{ matrix.python-version }}"
       - name: Check ${{ matrix.check-name }}
-        uses: pantsbuild/actions/run-tox@95209b287c817c78a765962d40ac6cea790fc511
+        uses: pantsbuild/actions/run-tox@e63d2d0e3c339bdffbe5e51e7c39550e3bc527bb
         with:
           tox-env: ${{ matrix.tox-env }}
   integration-tests:
@@ -40,12 +40,12 @@ jobs:
             python-version: [3, 8]
     steps:
       - name: Checkout Lambdex
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Python ${{ join(matrix.python-version, '.') }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "${{ join(matrix.python-version, '.') }}"
       - name: Run Integration Tests
-        uses: pantsbuild/actions/run-tox@95209b287c817c78a765962d40ac6cea790fc511
+        uses: pantsbuild/actions/run-tox@e63d2d0e3c339bdffbe5e51e7c39550e3bc527bb
         with:
           tox-env: py${{ join(matrix.python-version, '') }}-int-pre-pex1.6,py${{ join(matrix.python-version, '') }}-int-post-pex1.6
