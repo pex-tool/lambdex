@@ -8,10 +8,10 @@ jobs:
       matrix:
         include:
           - check-name: Format
-            python-version: 3.9
+            python-version: "3.10"
             tox-env: fmt-check
           - check-name: Packaging
-            python-version: 3.9
+            python-version: "3.10"
             tox-env: package
     steps:
       - name: Checkout Lambdex
@@ -25,19 +25,38 @@ jobs:
         with:
           tox-env: ${{ matrix.tox-env }}
   integration-tests:
-    name: (${{ matrix.os }}) TOXENV=py${{ join(matrix.python-version, '') }}-int-pre-pex1.6,py${{ join(matrix.python-version, '') }}-int-post-pex1.6
+    name: (${{ matrix.os }}) TOXENV=py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [[2, 7], [3, 6], [3, 7], [3, 8], [3, 9]]
-        os: [ubuntu-20.04, macos-11]
-        exclude:
-          - os: macos-11
-            python-version: [3, 6]
-          - os: macos-11
-            python-version: [3, 7]
-          - os: macos-11
-            python-version: [3, 8]
+        include:
+          - python-version: [2, 7]
+            os: macos-11
+            it-selector: "{pre,post}"
+          - python-version: [2, 7]
+            os: ubuntu-20.04
+            it-selector: "{pre,post}"
+          - python-version: [3, 6]
+            os: ubuntu-20.04
+            it-selector: "{pre,post}"
+          - python-version: [3, 7]
+            os: ubuntu-20.04
+            it-selector: "{pre,post}"
+          - python-version: [3, 8]
+            os: ubuntu-20.04
+            it-selector: "{pre,post}"
+          - python-version: [3, 9]
+            os: ubuntu-20.04
+            it-selector: "{pre,post}"
+          - python-version: [3, 10]
+            os: macos-11
+            it-selector: "post"
+          - python-version: [3, 10]
+            os: ubuntu-20.04
+            it-selector: "post"
+          - python-version: [3, 11, "0-rc.2"]
+            os: ubuntu-20.04
+            it-selector: "post"
     steps:
       - name: Checkout Lambdex
         uses: actions/checkout@v3
@@ -48,4 +67,4 @@ jobs:
       - name: Run Integration Tests
         uses: pantsbuild/actions/run-tox@e63d2d0e3c339bdffbe5e51e7c39550e3bc527bb
         with:
-          tox-env: py${{ join(matrix.python-version, '') }}-int-pre-pex1.6,py${{ join(matrix.python-version, '') }}-int-post-pex1.6
+          tox-env: py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
