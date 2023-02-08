@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import pkgutil
+import shutil
 import sys
 import zipfile
 
@@ -56,6 +57,12 @@ def write_lambdex_handler(pex_zip, options):
     ):
         die("Must specify one of -s/--script or -e/--entry-point but not both.")
 
+    if options.output:
+        output_zip = options.output
+        shutil.copy(pex_zip, output_zip)
+    else:
+        output_zip = pex_zip
+
     script = None
     if options.script is not None:
         method = options.handler
@@ -71,7 +78,7 @@ def write_lambdex_handler(pex_zip, options):
 
     lambdex_info = LambdexInfo(entry_point)
 
-    with contextlib.closing(zipfile.ZipFile(pex_zip, "a")) as zf:
+    with contextlib.closing(zipfile.ZipFile(output_zip, "a")) as zf:
         if script is not None:
             with open(os.path.realpath(options.script), "rb") as fp:
                 _write_zip_content(zf, script, fp.read())
@@ -86,6 +93,7 @@ def write_lambdex_handler(pex_zip, options):
 #   [-M module.py]
 #   [-s script.py]
 #   [-e pkg:symbol]
+#   [-o output_file.zip]
 def build_lambdex(args):
     write_lambdex_handler(args.pex, args)
 
@@ -136,6 +144,15 @@ def configure_build_command(parser):
         default="lambdex_handler.py",
         metavar="FILENAME",
         help="Root module of the lambda.",
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="output",
+        default=None,
+        metavar="FILENAME",
+        help="Write output to this path. Otherwise, modifies the input file in-place.",
     )
 
 
