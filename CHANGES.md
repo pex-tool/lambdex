@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.1.8
+
+This release adds an -o/--output option, for when the input file can't be modified.
+
+* An option to write the result to a new file. (#28)
+
 ## 0.1.7
 
 This release brings official support for Python 3.10 and 3.11.
