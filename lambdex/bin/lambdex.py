@@ -59,7 +59,7 @@ def write_lambdex_handler(pex_zip, options):
 
     if options.output:
         output_zip = options.output
-        shutil.copy(pex_zip, output_zip, follow_symlinks=False)
+        shutil.copy(pex_zip, output_zip)
     else:
         output_zip = pex_zip
 
