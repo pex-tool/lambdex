@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.1.9
+
+This release fixes a bug wherein, when using the -o/--output option Lambdex would fail to write the
+output file if the original input file was not writeable.
+
 ## 0.1.8
 
 This release adds an -o/--output option, for when the input file can't be modified.
