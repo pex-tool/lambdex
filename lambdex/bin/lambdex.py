@@ -10,6 +10,7 @@ import json
 import os
 import pkgutil
 import shutil
+import stat
 import sys
 import zipfile
 
@@ -60,6 +61,7 @@ def write_lambdex_handler(pex_zip, options):
     if options.output:
         output_zip = options.output
         shutil.copy(pex_zip, output_zip)
+        os.chmod(output_zip, os.stat(output_zip).st_mode | stat.S_IWRITE)
     else:
         output_zip = pex_zip
 
