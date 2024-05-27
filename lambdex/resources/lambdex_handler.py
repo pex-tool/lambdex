@@ -25,10 +25,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(__entry_point__, ".bootstrap")))
 try:
     # PEX >= 1.6.0
     from pex.pex_bootstrapper import bootstrap_pex_env
-    from pex.third_party.pkg_resources import EntryPoint as __EntryPoint
 except ImportError:
     # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
     from _pex.pex_bootstrapper import bootstrap_pex_env
+
+try:
+    from pex.third_party.pkg_resources import EntryPoint as __EntryPoint
+except ImportError:
     from pkg_resources import EntryPoint as __EntryPoint
 
 bootstrap_pex_env(__entry_point__)
