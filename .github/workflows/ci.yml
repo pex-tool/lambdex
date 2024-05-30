@@ -50,7 +50,7 @@ jobs:
           ENSUREPIP: no
         with:
           default: "${{ join(matrix.python-version, '.') }}"
-          command: pip install -U tox
+          command: pip install -U "tox<4"
       - name: Run Integration Tests
         run: tox -e py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
   integration-tests-37-312:
