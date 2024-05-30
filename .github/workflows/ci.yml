@@ -53,11 +53,11 @@ jobs:
           ENSUREPIP: "${{ matrix.ensurepip }}"
         with:
           default: "${{ join(matrix.python-version, '.') }}"
-          command: pip install -U "tox<4"
       - name: Run Integration Tests
         run: |
           which python
           python -V
+          python -m pip install -U "tox<4"
           python -m tox -e py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
   integration-tests-37-312:
     name: (${{ matrix.os }}) TOXENV=py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
