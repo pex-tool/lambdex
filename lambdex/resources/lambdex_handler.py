@@ -25,11 +25,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(__entry_point__, ".bootstrap")))
 try:
     # PEX >= 1.6.0
     from pex.pex_bootstrapper import bootstrap_pex_env
-    from pex.third_party.pkg_resources import EntryPoint as __EntryPoint
 except ImportError:
     # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
     from _pex.pex_bootstrapper import bootstrap_pex_env
-    from pkg_resources import EntryPoint as __EntryPoint
 
 bootstrap_pex_env(__entry_point__)
 
@@ -51,7 +49,24 @@ if not __lambdex_entry_point:
     __lambdex_info = __json.loads(__lambdex_info_blob)
     __lambdex_entry_point = __lambdex_info["entry_point"]
 
-__RUNNER = __EntryPoint.parse("run = %s" % __lambdex_entry_point).resolve()
+
+def load_entry_point(entry_point):
+    if sys.version_info[:2] >= (3, 8):
+        from importlib.metadata import EntryPoint
+
+        return EntryPoint(name=None, value=entry_point, group=None).load()
+    else:
+        try:
+            # PEX >= 1.6.0
+            from pex.third_party.pkg_resources import EntryPoint
+        except ImportError:
+            # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
+            from pkg_resources import EntryPoint
+        return EntryPoint.parse("run = {ep}".format(ep=entry_point)).resolve()
+
+
+__RUNNER = load_entry_point(__lambdex_entry_point)
+del load_entry_point
 
 
 def handler(*args, **kwargs):

@@ -5,8 +5,8 @@ build-backend = "flit_core.buildapi"
 [tool.flit.metadata]
 module = "lambdex"
 author = "The Lambdex developers"
-author-email = "pantsbuild@gmail.com"
-home-page = "https://github.com/pantsbuild/lambdex"
+author-email = "developers@pex-tool.org"
+home-page = "https://github.com/pex-tool/lambdex"
 description-file = "README.md"
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -25,13 +25,14 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Software Development :: Build Tools",
   "Topic :: System :: Archiving :: Packaging",
   "Topic :: System :: Software Distribution",
   "Topic :: Utilities",
 ]
 requires = ["pex>=1.1.15"]
-requires-python = ">=2.7,<3.12,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
+requires-python = ">=2.7,<3.13,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
 
 [tool.flit.metadata.requires-extra]
 test-gcp-http = [
@@ -47,7 +48,7 @@ lambdex = "lambdex.bin.lambdex:main"
 include = ["CHANGES.md"]
 
 [tool.flit.metadata.urls]
-Changelog = "https://github.com/pantsbuild/lambdex/blob/main/CHANGES.md"
+Changelog = "https://github.com/pex-tool/lambdex/blob/main/CHANGES.md"
 
 [tool.black]
 line-length = 100

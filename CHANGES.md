@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.2.0
+
+This release brings official support for Python 3.12 and is also the last release of Lambdex.
+See [the migration guide](MIGRATING.md) for how modern PEXes can be used directly with no need for
+Lambdex.
+
 ## 0.1.9
 
 This release fixes a bug wherein, when using the -o/--output option Lambdex would fail to write the

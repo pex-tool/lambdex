@@ -1,8 +1,13 @@
 # lambdex
 
+> [!WARNING]
+> Lambdex is no longer necessary and the 0.2.0 release of Lambdex is the last.
+> Modern PEXes can be used directly as Lambda zips. See the [the migration guide](MIGRATING.md) for
+> details.
+
 lambdex turns pex files into aws lambda functions.
 
-[pex](https://github.com/pantsbuild/pex) is a tool that simplifies packaging python environments and is ideally suited
+[pex](https://github.com/pex-tool/pex) is a tool that simplifies packaging python environments and is ideally suited
 for aws lambda.  lambdex takes pex files and turns them into aws lambda functions, allowing
 you to more easily run complex applications in the cloud.
 
@@ -87,7 +92,7 @@ Amazon provides an amazonlinux docker image which can be useful for building pla
 on AWS Lambda.  See [documentation](http://docs.aws.amazon.com/AmazonECR/latest/userguide/amazon_linux_container_image.html)
 for information about that image.
 
-The minimum Dockerfile to produce can environment that can build Amazon Linux-specific pex files can be found [here](https://github.com/pantsbuild/lambdex/blob/main/Dockerfile)
+The minimum Dockerfile to produce can environment that can build Amazon Linux-specific pex files can be found [here](https://github.com/pex-tool/lambdex/blob/main/Dockerfile)
 
 ### controlling runtime execution
 
