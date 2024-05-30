@@ -33,15 +33,12 @@ jobs:
           - python-version: [2, 7, 18]
             os: macos-12
             it-selector: "{pre,post}"
-            ensurepip: yes
           - python-version: [2, 7, 18]
             os: ubuntu-22.04
             it-selector: "{pre,post}"
-            ensurepip: yes
           - python-version: [3, 6, 15]
             os: ubuntu-22.04
             it-selector: "{pre,post}"
-            ensurepip: no
     steps:
       - name: Checkout Lambdex
         uses: actions/checkout@v4
@@ -50,13 +47,14 @@ jobs:
         #   https://github.com/gabrielfalcao/pyenv-action/pull/444
         uses: pex-tool/pyenv-action@baec18679698d2f80064cc04eb9ad0c8dc5ca8f8
         env:
-          ENSUREPIP: "${{ matrix.ensurepip }}"
+          ENSUREPIP: no
         with:
           default: "${{ join(matrix.python-version, '.') }}"
       - name: Run Integration Tests
         run: |
           which python
           python -V
+          python <(curl -sSL https://bootstrap.pypa.io/pip/${{ matrix.python-version[0] }}.-${{ matrix.python-version[1] }}/get-pip.py)
           python -m pip install -U "tox<4"
           python -m tox -e py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
   integration-tests-37-312:
