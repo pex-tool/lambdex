@@ -18,13 +18,6 @@ from pex.pex_bootstrapper import bootstrap_pex_env
 
 from lambdex.version import __version__
 
-try:
-    # PEX >= 1.6.0
-    from pex.third_party.pkg_resources import EntryPoint
-except ImportError:
-    # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
-    from pkg_resources import EntryPoint
-
 EVENT_FUNCTION_SIGNATURE = "event"
 GCP_HTTP_FUNCTION_SIGNATURE = "gcp-http"
 
@@ -207,6 +200,21 @@ def chdir(dirname):
     os.chdir(cwd)
 
 
+def load_entry_point(entry_point):
+    if sys.version_info[:2] >= (3, 8):
+        from importlib.metadata import EntryPoint
+
+        return EntryPoint(name=None, value=entry_point, group=None).load()
+    else:
+        try:
+            # PEX >= 1.6.0
+            from pex.third_party.pkg_resources import EntryPoint
+        except ImportError:
+            # PEX < 1.6.0 has an install requirement of setuptools which we leverage knowledge of.
+            from pkg_resources import EntryPoint
+        return EntryPoint.parse("run = {ep}".format(ep=entry_point)).resolve()
+
+
 # lambdex test [context configuration options] foo.pex <foo.json
 def test_lambdex(args):
     bootstrap_pex_env(args.pex)
@@ -223,7 +231,7 @@ def test_lambdex(args):
         sys.path.append(target)
 
         with chdir(target):
-            runner = EntryPoint.parse("run = %s" % lambdex_entry_point).resolve()
+            runner = load_entry_point(lambdex_entry_point)
             if args.type == EVENT_FUNCTION_SIGNATURE:
                 if args.empty:
                     runner({}, None)

@@ -54,8 +54,11 @@ jobs:
           - python-version: [3, 10]
             os: ubuntu-20.04
             it-selector: "post"
-          - python-version: [3, 11, "0-rc.2"]
+          - python-version: [3, 11]
             os: ubuntu-20.04
+            it-selector: "post"
+          - python-version: [3, 12]
+            os: ubuntu-22.04
             it-selector: "post"
     steps:
       - name: Checkout Lambdex
