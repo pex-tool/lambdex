@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   checks:
     name: TOXENV=${{ matrix.tox-env }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         include:
@@ -15,56 +15,76 @@ jobs:
             tox-env: package
     steps:
       - name: Checkout Lambdex
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ matrix.python-version }}"
       - name: Check ${{ matrix.check-name }}
         uses: pantsbuild/actions/run-tox@e63d2d0e3c339bdffbe5e51e7c39550e3bc527bb
         with:
           tox-env: ${{ matrix.tox-env }}
-  integration-tests:
+  integration-tests-27-36:
     name: (${{ matrix.os }}) TOXENV=py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
-          - python-version: [2, 7]
-            os: macos-11
+          - python-version: [2, 7, 18]
+            os: macos-12
             it-selector: "{pre,post}"
-          - python-version: [2, 7]
-            os: ubuntu-20.04
+          - python-version: [2, 7, 18]
+            os: ubuntu-22.04
             it-selector: "{pre,post}"
-          - python-version: [3, 6]
-            os: ubuntu-20.04
+          - python-version: [3, 6, 15]
+            os: ubuntu-22.04
             it-selector: "{pre,post}"
+    steps:
+      - name: Checkout Lambdex
+        uses: actions/checkout@v4
+      - name: Setup Python ${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}
+        # Upgrade node16 -> node20: Out for review here:
+        #   https://github.com/gabrielfalcao/pyenv-action/pull/444
+        uses: pex-tool/pyenv-action@baec18679698d2f80064cc04eb9ad0c8dc5ca8f8
+        env:
+          ENSUREPIP: no
+        with:
+          default: "${{ join(matrix.python-version, '.') }}"
+          command: pip install -U tox
+      - name: Run Integration Tests
+        run: tox -e py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
+  integration-tests-37-312:
+    name: (${{ matrix.os }}) TOXENV=py${{ matrix.python-version[0] }}${{ matrix.python-version[1] }}-int-${{ matrix.it-selector }}-pex1.6
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
           - python-version: [3, 7]
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             it-selector: "{pre,post}"
           - python-version: [3, 8]
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             it-selector: "{pre,post}"
           - python-version: [3, 9]
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             it-selector: "{pre,post}"
           - python-version: [3, 10]
-            os: macos-11
+            os: macos-12
             it-selector: "post"
           - python-version: [3, 10]
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             it-selector: "post"
           - python-version: [3, 11]
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             it-selector: "post"
           - python-version: [3, 12]
             os: ubuntu-22.04
             it-selector: "post"
     steps:
       - name: Checkout Lambdex
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Python ${{ join(matrix.python-version, '.') }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "${{ join(matrix.python-version, '.') }}"
       - name: Run Integration Tests

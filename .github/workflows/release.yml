@@ -11,7 +11,7 @@ on:
 jobs:
   determine-tag:
     name: Determine the release tag to operate against.
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       release-tag: ${{ steps.determine-tag.outputs.release-tag }}
       release-version: ${{ steps.determine-tag.outputs.release-version }}
@@ -33,16 +33,16 @@ jobs:
           fi
   pypi:
     name: Publish sdist and wheel to PyPI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment: Release
     needs: determine-tag
     steps:
       - name: Checkout ${{ needs.determine-tag.outputs.release-tag }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.determine-tag.outputs.release-tag }}
       - name: Setup Python 3.9
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.9
       - name: Publish ${{ needs.determine-tag.outputs.release-tag }}
